@@ -202,10 +202,14 @@ const response = await fetch("https://optistyle-backend.onrender.com/api/chat", 
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
-fetch(`${API_URL}/api/chat`, {
+const response = await fetch(`${API_URL}/api/chat`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ message })
+  body: JSON.stringify({
+    message: userMessage,
+    deepThinking: useDeepThinking,
+  }),
 });
+
 
 export default Chatbot;
