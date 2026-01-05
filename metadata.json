@@ -1,0 +1,7 @@
+{
+  "name": "OptiStyle - Premium Optical E-commerce",
+  "description": "A luxury optical store featuring glassmorphism design, educational eye-screening modules, and secure checkout.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
