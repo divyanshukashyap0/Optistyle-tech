@@ -35,7 +35,7 @@ const Chatbot: React.FC = () => {
   setIsTyping(true);
 
   try {
-    const response = await fetch("https://YOUR-BACKEND-NAME.onrender.com", {
+    const response = await fetch("https://optistyle-backend.onrender.com", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
