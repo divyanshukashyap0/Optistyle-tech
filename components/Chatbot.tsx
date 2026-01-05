@@ -35,7 +35,7 @@ const Chatbot: React.FC = () => {
   setIsTyping(true);
 
   try {
-    const response = await fetch("http://localhost:5000/api/chat", {
+    const response = await fetch("https://YOUR-BACKEND-NAME.onrender.com", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
