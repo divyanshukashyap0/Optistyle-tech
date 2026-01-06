@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Package, DollarSign, Activity, Bell, ChevronRight, MessageSquare, Database, Loader2, RefreshCw, AlertTriangle } from 'lucide-react';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
-const API_URL = import.meta.env.VITE_API_URL;
 
 const Admin: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<'Overview' | 'order' | 'Inquiries'>('Overview');
