@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL;
 
 import React, { useState } from 'react';
 // Corrected named imports for hooks from react-router-dom to ensure they are visible to the compiler

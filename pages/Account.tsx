@@ -8,6 +8,7 @@ import { db } from '../firebase';
 interface AccountProps {
   user: UserType;
 }
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Account: React.FC<AccountProps> = ({ user }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'order' | 'security'>('overview');

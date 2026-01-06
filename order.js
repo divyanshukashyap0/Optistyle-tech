@@ -1,6 +1,7 @@
 
 import { collection, addDoc, serverTimestamp, doc, runTransaction } from "firebase/firestore";
 import { db } from "./firebase.js";
+const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Generates a unique, sequential invoice number on the client-side using Firestore transactions.
