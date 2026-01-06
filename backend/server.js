@@ -16,6 +16,22 @@ import { generateInvoicePDF } from "./pdfInvoice.js";
 import { uploadInvoiceToStorage } from "./storage.js";
 
 /* ===================== FIREBASE INIT ===================== */
+import admin from "firebase-admin";
+
+const serviceAccount = JSON.parse(
+  Buffer.from(
+    process.env.FIREBASE_SERVICE_ACCOUNT,
+    "base64"
+  ).toString("utf8")
+);
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+/* ===================== APP INIT ===================== */
+import admin from "firebase-admin";
+
 const serviceAccount = JSON.parse(
   Buffer.from(
     process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
@@ -28,11 +44,32 @@ admin.initializeApp({
   storageBucket: "optistyle-c4c81.firebasestorage.app",
 });
 
+console.log("[FIREBASE] ✅ Firebase Admin Initialized");
 
-/* ===================== APP INIT ===================== */
-const app = express();
-const PORT = process.env.PORT || 5000;
-const HOST = "0.0.0.0";
+
+
+app.get("/api/test-firestore", async (req, res) => {
+  try {
+    const db = admin.firestore();
+
+    const testRef = db.collection("test").doc("ping");
+    await testRef.set({
+      status: "Firestore connected",
+      time: new Date().toISOString(),
+    });
+
+    res.json({
+      success: true,
+      message: "Firestore working ✅",
+    });
+  } catch (error) {
+    console.error("Firestore test failed:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
 
 /* ===================== MIDDLEWARE ===================== */
 app.use(cors({ origin: "*" }));
@@ -85,7 +122,7 @@ const orderHandler = async (req, res) => {
     const enrichedOrder = {
       ...orderData,
       invoiceNumber,
-      orderstatus: "Processing",
+      ordertatus: "Processing",
       paymentStatus: "Paid",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -102,7 +139,7 @@ const orderHandler = async (req, res) => {
     }
 
     const db = admin.firestore();
-    const docRef = await db.collection("orders").add(enrichedOrder);
+    const docRef = await db.collection("order").add(enrichedOrder);
 
     sendAdminMail(enrichedOrder, pdfBuffer).catch(() => {});
     sendUserMail(enrichedOrder, pdfBuffer).catch(() => {});
@@ -138,4 +175,24 @@ app.listen(PORT, HOST, () => {
 📡 http://${HOST}:${PORT}
 ========================================
 `);
+});
+
+
+
+
+
+app.get("/api/test-firestore", async (req, res) => {
+  try {
+    const db = admin.firestore();
+    await db.collection("test").add({
+      ok: true,
+      time: Date.now(),
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
 });
