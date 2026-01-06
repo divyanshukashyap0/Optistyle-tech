@@ -15,63 +15,31 @@ import { generateInvoiceNumber } from "./invoiceNumber.js";
 import { generateInvoicePDF } from "./pdfInvoice.js";
 import { uploadInvoiceToStorage } from "./storage.js";
 
-/* ===================== FIREBASE INIT ===================== */
-
-const serviceAccount = JSON.parse(
-  Buffer.from(
-    process.env.FIREBASE_SERVICE_ACCOUNT,
-    "base64"
-  ).toString("utf8")
-);
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
 /* ===================== APP INIT ===================== */
-
-const serviceAccount = JSON.parse(
-  Buffer.from(
-    process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
-    "base64"
-  ).toString("utf-8")
-);
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: "optistyle-c4c81.firebasestorage.app",
-});
-
-console.log("[FIREBASE] ✅ Firebase Admin Initialized");
-
-
-
-app.get("/api/test-firestore", async (req, res) => {
-  try {
-    const db = admin.firestore();
-
-    const testRef = db.collection("test").doc("ping");
-    await testRef.set({
-      status: "Firestore connected",
-      time: new Date().toISOString(),
-    });
-
-    res.json({
-      success: true,
-      message: "Firestore working ✅",
-    });
-  } catch (error) {
-    console.error("Firestore test failed:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
+const app = express();
+const PORT = process.env.PORT || 5000;
+const HOST = "0.0.0.0";
 
 /* ===================== MIDDLEWARE ===================== */
 app.use(cors({ origin: "*" }));
 app.use(express.json());
+
+/* ===================== FIREBASE INIT ===================== */
+if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(
+    Buffer.from(
+      process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
+      "base64"
+    ).toString("utf-8")
+  );
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: "optistyle-c4c81.firebasestorage.app",
+  });
+
+  console.log("[FIREBASE] ✅ Firebase Admin Initialized");
+}
 
 /* ===================== HEALTH ===================== */
 app.get("/", (req, res) => {
@@ -86,6 +54,23 @@ app.get("/api/status", (req, res) => {
     status: "Online",
     timestamp: new Date().toISOString(),
   });
+});
+
+/* ===================== FIRESTORE TEST ===================== */
+app.get("/api/test-firestore", async (req, res) => {
+  try {
+    const db = admin.firestore();
+    await db.collection("test").add({
+      ok: true,
+      time: new Date().toISOString(),
+    });
+    res.json({ success: true, message: "Firestore working ✅" });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
 });
 
 /* ===================== EYE TEST PDF ===================== */
@@ -105,7 +90,7 @@ app.post("/api/eye-test-pdf", (req, res) => {
     doc.text(`Near Vision: ${nearVision}`);
     doc.text(`Far Vision: ${farVision}`);
     doc.end();
-  } catch (err) {
+  } catch {
     res.status(500).end();
   }
 });
@@ -114,13 +99,12 @@ app.post("/api/eye-test-pdf", (req, res) => {
 const orderHandler = async (req, res) => {
   try {
     const orderData = req.body;
-
     const invoiceNumber = await generateInvoiceNumber();
 
     const enrichedOrder = {
       ...orderData,
       invoiceNumber,
-      ordertatus: "Processing",
+      orderStatus: "Processing",
       paymentStatus: "Paid",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -137,7 +121,7 @@ const orderHandler = async (req, res) => {
     }
 
     const db = admin.firestore();
-    const docRef = await db.collection("order").add(enrichedOrder);
+    const docRef = await db.collection("orders").add(enrichedOrder);
 
     sendAdminMail(enrichedOrder, pdfBuffer).catch(() => {});
     sendUserMail(enrichedOrder, pdfBuffer).catch(() => {});
@@ -153,9 +137,9 @@ const orderHandler = async (req, res) => {
   }
 };
 
-/* ===================== ORDER ROUTES ===================== */
+/* ===================== ROUTES ===================== */
 app.post("/api/order", orderHandler);
-/* ===================== AI CHAT ===================== */
+
 app.post("/api/chat", async (req, res) => {
   try {
     const reply = await chatWithgroq(req.body.message);
@@ -173,24 +157,4 @@ app.listen(PORT, HOST, () => {
 📡 http://${HOST}:${PORT}
 ========================================
 `);
-});
-
-
-
-
-
-app.get("/api/test-firestore", async (req, res) => {
-  try {
-    const db = admin.firestore();
-    await db.collection("test").add({
-      ok: true,
-      time: Date.now(),
-    });
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
-  }
 });
