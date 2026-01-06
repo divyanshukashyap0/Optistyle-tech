@@ -36,6 +36,12 @@ const serviceAccount = JSON.parse(
 
 /* ===================== APP INIT ===================== */
 const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log("Backend running on port", PORT);
+});
+
 
 /* ===================== MIDDLEWARE ===================== */
 app.use(
@@ -196,4 +202,11 @@ app.listen(PORT, HOST, () => {
 🏥 Health Check: http://${HOST}:${PORT}/api/status
 ========================================
 `);
+});
+
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log("Backend running on port", PORT);
 });
