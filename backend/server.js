@@ -17,7 +17,10 @@ import { uploadInvoiceToStorage } from "./storage.js";
 
 /* ===================== FIREBASE INIT ===================== */
 const serviceAccount = JSON.parse(
-  process.env.FIREBASE_SERVICE_ACCOUNT
+  Buffer.from(
+    process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
+    "base64"
+  ).toString("utf-8")
 );
 
 admin.initializeApp({
@@ -25,7 +28,6 @@ admin.initializeApp({
   storageBucket: "optistyle-c4c81.firebasestorage.app",
 });
 
-console.log("[FIREBASE] ✅ Firebase Admin Initialized");
 
 /* ===================== APP INIT ===================== */
 const app = express();
