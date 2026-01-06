@@ -53,7 +53,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        const isAdmin = firebaseUser.email === 'admin@optistyle.com';
+        const isAdmin = firebaseUser.email === 'divyanshu00884466@gmail.com';
         setUser({
           email: firebaseUser.email || '',
           isAuthenticated: true,
