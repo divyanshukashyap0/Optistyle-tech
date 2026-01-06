@@ -5,8 +5,8 @@ import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const Admin: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<'Overview' | 'Orders' | 'Inquiries'>('Overview');
-  const [cloudOrders, setCloudOrders] = useState<any[]>([]);
+  const [currentTab, setCurrentTab] = useState<'Overview' | 'orders' | 'Inquiries'>('Overview');
+  const [cloudorders, setCloudorders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +17,7 @@ const Admin: React.FC = () => {
       const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setCloudOrders(data);
+      setCloudorders(data);
     } catch (e: any) {
       console.error("Cloud Registry Error:", e);
       if (e.code === 'not-found' || e.message.includes('database')) {
@@ -34,11 +34,11 @@ const Admin: React.FC = () => {
     fetchRegistry();
   }, []);
 
-  const totalRevenue = cloudOrders.reduce((acc, o) => acc + (o.totalAmount || 0), 0);
+  const totalRevenue = cloudorders.reduce((acc, o) => acc + (o.totalAmount || 0), 0);
 
   const stats = [
     { label: 'Cloud Revenue', value: isLoading ? null : `₹${totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-900/20' },
-    { label: 'Cloud Sales', value: isLoading ? null : cloudOrders.length.toString(), icon: Package, color: 'text-cyan-400', bg: 'bg-cyan-900/20' },
+    { label: 'Cloud Sales', value: isLoading ? null : cloudorders.length.toString(), icon: Package, color: 'text-cyan-400', bg: 'bg-cyan-900/20' },
     { label: 'Sync Status', value: isLoading ? null : (error ? 'Offline' : 'Live'), icon: Activity, color: error ? 'text-rose-400' : 'text-indigo-400', bg: error ? 'bg-rose-900/20' : 'bg-indigo-900/20' },
   ];
 
@@ -79,7 +79,7 @@ const Admin: React.FC = () => {
           <div className="glass p-6 rounded-[2.5rem] border-white/5 space-y-3">
             {[
               { id: 'Overview', icon: Activity, label: 'Cloud Overview' },
-              { id: 'Orders', icon: Database, label: 'Full Registry' },
+              { id: 'orders', icon: Database, label: 'Full Registry' },
               { id: 'Inquiries', icon: MessageSquare, label: 'Inquiries' }
             ].map(tab => (
               <button 
@@ -133,13 +133,13 @@ const Admin: React.FC = () => {
                         </tr>
                       ))
                     ) : (
-                      cloudOrders.map(order => (
+                      cloudorders.map(order => (
                         <tr key={order.id} className="hover:bg-white/5 transition-colors">
                           <td className="px-8 py-6 text-xs font-mono text-cyan-500">{order.orderId}</td>
                           <td className="px-8 py-6 text-sm">{order.userEmail}</td>
                           <td className="px-8 py-6 text-sm font-bold">₹{order.totalAmount?.toLocaleString()}</td>
                           <td className="px-8 py-6">
-                             <span className="px-2 py-1 bg-amber-900/30 text-amber-400 rounded text-[9px] font-bold uppercase">{order.orderStatus}</span>
+                             <span className="px-2 py-1 bg-amber-900/30 text-amber-400 rounded text-[9px] font-bold uppercase">{order.orderstatus}</span>
                           </td>
                         </tr>
                       ))

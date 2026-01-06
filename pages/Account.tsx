@@ -11,12 +11,12 @@ interface AccountProps {
 
 const Account: React.FC<AccountProps> = ({ user }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'security'>('overview');
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setorders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchorders = async () => {
       if (!user.email) return;
       setIsLoading(true);
       setError(null);
@@ -32,15 +32,15 @@ const Account: React.FC<AccountProps> = ({ user }) => {
           ...doc.data()
         }));
 
-        const sortedOrders = ordersList.sort((a: any, b: any) => {
+        const sortedorders = ordersList.sort((a: any, b: any) => {
           const timeA = a.createdAt?.seconds || 0;
           const timeB = b.createdAt?.seconds || 0;
           return timeB - timeA; 
         });
 
-        setOrders(sortedOrders);
+        setorders(sortedorders);
       } catch (err: any) {
-        console.error("Fetch Cloud Orders Error:", err);
+        console.error("Fetch Cloud orders Error:", err);
         if (err.code === 'not-found') {
           setError("Database node not found. Please contact support.");
         } else if (err.message.includes('index')) {
@@ -53,7 +53,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
       }
     };
 
-    fetchOrders();
+    fetchorders();
   }, [user.email]);
 
   return (
@@ -184,7 +184,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
                           </div>
                           <div className="flex items-center gap-4">
                             <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400">
-                              {order.orderStatus || 'Processing'}
+                              {order.orderstatus || 'Processing'}
                             </span>
                           </div>
                         </div>

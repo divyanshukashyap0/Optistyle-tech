@@ -33,12 +33,12 @@ export const generateInvoiceNumber = async () => {
 export const createCloudOrder = async (orderData) => {
   try {
     const invoiceNumber = await generateInvoiceNumber();
-    const docRef = await addDoc(collection(db, "orders"), {
+    const docRef = await addDoc(collection(db, "order"), {
       ...orderData,
       invoiceNumber,
       createdAt: serverTimestamp(),
       paymentStatus: 'Paid',
-      orderStatus: 'Processing'
+      orderstatus: 'Processing'
     });
     return { success: true, id: docRef.id, invoiceNumber };
   } catch (error) {
