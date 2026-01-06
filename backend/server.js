@@ -8,6 +8,8 @@ dotenv.config();
 
 console.log("groq KEY:", process.env.GROQ_API_KEY);
 
+
+
 /* ===================== IMPORTS ===================== */
 import express from "express";
 import cors from "cors";
@@ -45,6 +47,10 @@ app.use(
 );
 
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("OptiStyle Backend is running 🚀");
+});
 
 /* ===================== FIREBASE INIT ===================== */
 admin.initializeApp({
