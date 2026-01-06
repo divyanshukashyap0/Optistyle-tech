@@ -91,6 +91,8 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
 
     try {
       const response = await fetch(`${API_URL}/api/orders`, {
+        fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
+ba9bd91797db201cd34cfb878320e9f7ea3e7102
         method: "POST",
         headers: {
           "Content-Type": "application/json",

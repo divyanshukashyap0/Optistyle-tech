@@ -1,7 +1,4 @@
 /* ===================== ENV SETUP ===================== */
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -17,10 +14,6 @@ import { sendAdminMail, sendUserMail } from "./mailer.js";
 import { generateInvoiceNumber } from "./invoiceNumber.js";
 import { generateInvoicePDF } from "./pdfInvoice.js";
 import { uploadInvoiceToStorage } from "./storage.js";
-
-/* ===================== PATH SETUP ===================== */
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 /* ===================== FIREBASE INIT ===================== */
 const serviceAccount = JSON.parse(
@@ -80,8 +73,8 @@ app.post("/api/eye-test-pdf", (req, res) => {
   }
 });
 
-/* ===================== ORDER API (FIXED) ===================== */
-app.post("/api/order", async (req, res) => {
+/* ===================== ORDER HANDLER ===================== */
+const orderHandler = async (req, res) => {
   try {
     const orderData = req.body;
 
@@ -121,7 +114,11 @@ app.post("/api/order", async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
-});
+};
+
+/* ===================== ORDER ROUTES ===================== */
+app.post("/api/order", orderHandler);
+app.post("/api/orders", orderHandler);
 
 /* ===================== AI CHAT ===================== */
 app.post("/api/chat", async (req, res) => {
@@ -142,23 +139,3 @@ app.listen(PORT, HOST, () => {
 ========================================
 `);
 });
-
-
-// 🔁 Common order handler
-const orderHandler = async (req, res) => {
-  try {
-    const orderData = req.body;
-
-    res.status(201).json({
-      success: true,
-      orderId: "TEST123",
-      invoiceNumber: "INV-TEST",
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
-
-// ✅ Support BOTH routes
-app.post("/api/order", orderHandler);
-app.post("/api/orders", orderHandler);
