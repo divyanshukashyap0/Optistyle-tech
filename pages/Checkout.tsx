@@ -90,7 +90,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
     };
 
     try {
-      const response = await fetch(`${API_URL}/api/order`, {
+      const response = await fetch(`${API_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
