@@ -83,7 +83,7 @@ const orderHandler = async (req, res) => {
     const enrichedOrder = {
       ...orderData,
       invoiceNumber,
-      orderStatus: "Processing",
+      orderstatus: "Processing",
       paymentStatus: "Paid",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -118,8 +118,6 @@ const orderHandler = async (req, res) => {
 
 /* ===================== ORDER ROUTES ===================== */
 app.post("/api/order", orderHandler);
-app.post("/api/orders", orderHandler);
-
 /* ===================== AI CHAT ===================== */
 app.post("/api/chat", async (req, res) => {
   try {
