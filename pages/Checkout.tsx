@@ -90,7 +90,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
     };
 
     try {
-fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
+fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
