@@ -89,45 +89,44 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
       orderId: `OPT-${Date.now()}`,
     };
 
-    try {
-      const response = await fetch(`${API_URL}/api/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+   try {
+  const response = await fetch(`${API_URL}/api/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
 
-      const text = await response.text();
+  const text = await response.text();
 
-      if (!response.ok) {
-        throw new Error(text || "Order service failed");
-      }
+  if (!response.ok) {
+    throw new Error(text || "Order service failed");
+  }
 
-      const result = JSON.parse(text);
+  const result = JSON.parse(text);
 
-      if (result.success) {
-        setOrderInfo({
-          id: result.orderId,
-          invoiceNumber: result.invoiceNumber,
-          invoiceUrl: result.invoiceUrl,
-        });
+  if (result.success) {
+    setOrderInfo({
+      id: result.orderId,
+      invoiceNumber: result.invoiceNumber,
+      invoiceUrl: result.invoiceUrl,
+    });
 
-        generateAndDownloadLocalPDF(
-          result.invoiceNumber,
-          customerName,
-          address
-        );
+    generateAndDownloadLocalPDF(
+      result.invoiceNumber,
+      customerName,
+      address
+    );
 
-        clearCart();
-        setIsSuccess(true);
-      }
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+    clearCart();
+    setIsSuccess(true);
+  }
+} catch (err: any) {
+  setError(err.message || "Something went wrong");
+} finally {
+  setIsProcessing(false);
+}
 
   if (isSuccess && orderInfo) {
     return (
