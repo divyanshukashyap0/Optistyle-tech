@@ -16,7 +16,6 @@ import { generateInvoicePDF } from "./pdfInvoice.js";
 import { uploadInvoiceToStorage } from "./storage.js";
 
 /* ===================== FIREBASE INIT ===================== */
-import admin from "firebase-admin";
 
 const serviceAccount = JSON.parse(
   Buffer.from(
@@ -30,7 +29,6 @@ admin.initializeApp({
 });
 
 /* ===================== APP INIT ===================== */
-import admin from "firebase-admin";
 
 const serviceAccount = JSON.parse(
   Buffer.from(

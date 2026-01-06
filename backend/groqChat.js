@@ -14,7 +14,7 @@ export async function chatWithgroq(message) {
       {
         role: "system",
         content:
-          "You are OptiStyle AI assistant. Help users with eyewear, lenses, orders, and FAQs."
+          "You are OptiStyle AI assistant. Help users with eyewear, lenses, order, and FAQs."
       },
       {
         role: "user",

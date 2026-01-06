@@ -38,7 +38,7 @@ export const createCloudOrder = async (orderData) => {
       invoiceNumber,
       createdAt: serverTimestamp(),
       paymentStatus: 'Paid',
-      orderstatus: 'Processing'
+      ordertatus: 'Processing'
     });
     return { success: true, id: docRef.id, invoiceNumber };
   } catch (error) {

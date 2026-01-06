@@ -38,7 +38,7 @@ const PrivacyPolicy: React.FC = () => {
           2. How We Use Your Information
         </h2>
         <ul className="list-disc ml-6 space-y-1">
-          <li>Process and deliver your orders</li>
+          <li>Process and deliver your order</li>
           <li>Verify prescriptions and customize lenses</li>
           <li>Send order updates and service notifications</li>
           <li>Improve website performance and user experience</li>

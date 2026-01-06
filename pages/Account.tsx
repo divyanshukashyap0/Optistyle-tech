@@ -10,37 +10,37 @@ interface AccountProps {
 }
 
 const Account: React.FC<AccountProps> = ({ user }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'security'>('overview');
-  const [orders, setorders] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'overview' | 'order' | 'security'>('overview');
+  const [order, setorder] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchorders = async () => {
+    const fetchorder = async () => {
       if (!user.email) return;
       setIsLoading(true);
       setError(null);
       try {
         const q = query(
-          collection(db, "orders"), 
+          collection(db, "order"), 
           where("userEmail", "==", user.email)
         );
         
         const querySnapshot = await getDocs(q);
-        const ordersList = querySnapshot.docs.map(doc => ({
+        const orderList = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
 
-        const sortedorders = ordersList.sort((a: any, b: any) => {
+        const sortedorder = orderList.sort((a: any, b: any) => {
           const timeA = a.createdAt?.seconds || 0;
           const timeB = b.createdAt?.seconds || 0;
           return timeB - timeA; 
         });
 
-        setorders(sortedorders);
+        setorder(sortedorder);
       } catch (err: any) {
-        console.error("Fetch Cloud orders Error:", err);
+        console.error("Fetch Cloud order Error:", err);
         if (err.code === 'not-found') {
           setError("Database node not found. Please contact support.");
         } else if (err.message.includes('index')) {
@@ -53,7 +53,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
       }
     };
 
-    fetchorders();
+    fetchorder();
   }, [user.email]);
 
   return (
@@ -73,7 +73,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
           <nav className="glass p-4 rounded-[2.5rem] border-white/10 space-y-2">
             {[
               { id: 'overview', label: 'Dashboard', icon: Sparkles },
-              { id: 'orders', label: 'Order History', icon: Package },
+              { id: 'order', label: 'Order History', icon: Package },
               { id: 'security', label: 'Security & Privacy', icon: Shield }
             ].map((item) => (
               <button
@@ -109,7 +109,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="glass p-6 rounded-3xl border-white/5 space-y-2">
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Transactions</p>
-                      {isLoading ? <div className="skeleton h-8 w-12 rounded-lg"></div> : <p className="text-3xl font-bold text-white">{orders.length}</p>}
+                      {isLoading ? <div className="skeleton h-8 w-12 rounded-lg"></div> : <p className="text-3xl font-bold text-white">{order.length}</p>}
                     </div>
                     <div className="glass p-6 rounded-3xl border-white/5 space-y-2">
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Status</p>
@@ -134,7 +134,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
                 </div>
               )}
 
-              {activeTab === 'orders' && (
+              {activeTab === 'order' && (
                 <div className="space-y-6">
                   <h3 className="text-3xl font-serif text-white px-2">Purchase History</h3>
                   
@@ -155,7 +155,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
                         </div>
                       ))}
                     </div>
-                  ) : orders.length === 0 ? (
+                  ) : order.length === 0 ? (
                     <div className="glass p-12 rounded-[2.5rem] border-white/5 text-center space-y-4">
                       <ShoppingBag size={24} className="mx-auto text-slate-600" />
                       <h4 className="text-white font-bold">No cloud records identified</h4>
@@ -164,7 +164,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {orders.map((order) => (
+                      {order.map((order) => (
                         <div key={order.id} className="glass p-8 rounded-[2.5rem] border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-cyan-500/30 transition-all">
                           <div className="flex items-center gap-6">
                             <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-cyan-400 border border-white/5 overflow-hidden">
@@ -184,7 +184,7 @@ const Account: React.FC<AccountProps> = ({ user }) => {
                           </div>
                           <div className="flex items-center gap-4">
                             <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400">
-                              {order.orderstatus || 'Processing'}
+                              {order.ordertatus || 'Processing'}
                             </span>
                           </div>
                         </div>
