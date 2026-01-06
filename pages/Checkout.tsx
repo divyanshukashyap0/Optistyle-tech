@@ -91,8 +91,6 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
 
     try {
       const response = await fetch(`${API_URL}/api/orders`, {
-        fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
-ba9bd91797db201cd34cfb878320e9f7ea3e7102
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,12 +98,13 @@ ba9bd91797db201cd34cfb878320e9f7ea3e7102
         body: JSON.stringify(payload),
       });
 
+      const text = await response.text();
+
       if (!response.ok) {
-        const text = await response.text();
         throw new Error(text || "Order service failed");
       }
 
-      const result = await response.json();
+      const result = JSON.parse(text);
 
       if (result.success) {
         setOrderInfo({
@@ -157,7 +156,10 @@ ba9bd91797db201cd34cfb878320e9f7ea3e7102
         <ShoppingBag /> Checkout
       </h1>
 
-      <form onSubmit={handlePayment} className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <form
+        onSubmit={handlePayment}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-16"
+      >
         <div className="space-y-6">
           <input
             name="fullName"
@@ -189,11 +191,16 @@ ba9bd91797db201cd34cfb878320e9f7ea3e7102
           <h3 className="text-2xl text-white">Order Summary</h3>
 
           {cart.map((item) => (
-            <div key={item.id} className="flex justify-between text-white text-sm">
+            <div
+              key={item.id}
+              className="flex justify-between text-white text-sm"
+            >
               <span>
                 {item.name} × {item.quantity}
               </span>
-              <span>₹{(item.price * item.quantity).toLocaleString()}</span>
+              <span>
+                ₹{(item.price * item.quantity).toLocaleString()}
+              </span>
             </div>
           ))}
 
