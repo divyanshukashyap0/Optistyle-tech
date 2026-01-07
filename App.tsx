@@ -164,7 +164,8 @@ const App: React.FC = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/account" element={user.isAuthenticated ? <Account user={user} /> : <Navigate to="/login" />} />
               <Route path="/admin" element={user.isAdmin ? <Admin /> : <Navigate to="/" />} />
-              
+              <Route path="/my-orders" element={<MyOrders />} />
+
               <Route path="/login" element={
                 user.isAuthenticated ? <Navigate to="/account" /> : (
                 <div className="max-w-md mx-auto mt-20 p-8 glass-dark rounded-3xl border border-white/10 shadow-2xl animate-reveal">
