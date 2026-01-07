@@ -1,5 +1,5 @@
 //const API_URL = import.meta.env.VITE_API_URL;
-
+import MyOrders from "./pages/MyOrders";
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
