@@ -96,46 +96,19 @@ app.post("/api/eye-test-pdf", (req, res) => {
 });
 
 /* ===================== ORDER HANDLER ===================== */
-const orderHandler = async (req, res) => {
-  try {
-    const orderData = req.body;
-    const invoiceNumber = await generateInvoiceNumber();
+const db = admin.firestore();
 
-    const enrichedOrder = {
-      ...orderData,
-      invoiceNumber,
-      orderStatus: "Processing",
-      paymentStatus: "Paid",
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    };
+// 🔹 Global orders
+const orderRef = await db.collection("orders").add(enrichedOrder);
 
-    const pdfBuffer = await generateInvoicePDF(enrichedOrder);
+// 🔹 User profile orders
+await db
+  .collection("users")
+  .doc(orderData.userEmail)   // email = user identity
+  .collection("orders")
+  .doc(orderRef.id)
+  .set(enrichedOrder);
 
-    try {
-      enrichedOrder.invoiceUrl = await uploadInvoiceToStorage(
-        pdfBuffer,
-        `invoice_${invoiceNumber}.pdf`
-      );
-    } catch {
-      console.warn("Invoice upload failed");
-    }
-
-    const db = admin.firestore();
-    const docRef = await db.collection("orders").add(enrichedOrder);
-
-    sendAdminMail(enrichedOrder, pdfBuffer).catch(() => {});
-    sendUserMail(enrichedOrder, pdfBuffer).catch(() => {});
-
-    res.status(201).json({
-      success: true,
-      orderId: docRef.id,
-      invoiceNumber,
-      invoiceUrl: enrichedOrder.invoiceUrl || "",
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
 
 /* ===================== ROUTES ===================== */
 app.post("/api/order", orderHandler);
