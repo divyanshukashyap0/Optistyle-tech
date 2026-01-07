@@ -7,7 +7,6 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
-import { jsPDF } from "jspdf";
 
 interface CheckoutProps {
   cart: CartItem[];
@@ -33,11 +32,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
   );
   const total = subtotal + (subtotal > 10000 ? 0 : 500);
 
-  const generateAndDownloadLocalPDF = (
-    invNumber: string,
-    customerName: string,
-    address: string
-  ) => {
+   => {
     const doc = new jsPDF();
     doc.setFontSize(20);
     doc.text("OptiStyle Invoice", 20, 20);
@@ -109,21 +104,43 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
       const result = JSON.parse(text);
 
       if (result.success) {
-        setOrderInfo({
-          id: result.orderId,
-          invoiceNumber: result.invoiceNumber,
-          invoiceUrl: result.invoiceUrl,
-        });
+  setOrderInfo({
+    id: result.orderId,
+    invoiceNumber: result.invoiceNumber,
+    invoiceUrl: result.invoiceUrl,
+  });
 
-        generateAndDownloadLocalPDF(
-          result.invoiceNumber,
-          customerName,
-          address
-        );
+  // ✅ SAVE ORDER IN LOCAL STORAGE (FOR USER PROFILE)
+  const existingOrders = JSON.parse(
+    localStorage.getItem("myOrders") || "[]"
+  );
 
-        clearCart();
-        setIsSuccess(true);
-      }
+  localStorage.setItem(
+    "myOrders",
+    JSON.stringify([
+      ...existingOrders,
+      {
+        orderId: result.orderId,
+        invoiceNumber: result.invoiceNumber,
+        invoiceUrl: result.invoiceUrl,
+        totalAmount: total,
+        date: new Date().toISOString(),
+        userEmail: user.email,
+      },
+    ])
+  );
+
+  // ❌ REMOVE THIS LATER (see next section)
+  generateAndDownloadLocalPDF(
+    result.invoiceNumber,
+    customerName,
+    address
+  );
+
+  clearCart();
+  setIsSuccess(true);
+}
+
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -142,6 +159,14 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
             {orderInfo.invoiceNumber}
           </span>
         </p>
+        <a
+  href={orderInfo.invoiceUrl}
+  target="_blank"
+  className="block mt-4 text-cyan-400 underline"
+>
+  Download Invoice PDF
+</a>
+
         <button
           onClick={() => (window.location.hash = "/")}
           className="mt-10 px-8 py-4 bg-white text-black rounded-xl font-bold"
