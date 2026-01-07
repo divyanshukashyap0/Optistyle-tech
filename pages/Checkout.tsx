@@ -7,6 +7,7 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
+import { jsPDF } from "jspdf";
 
 interface CheckoutProps {
   cart: CartItem[];
@@ -32,29 +33,37 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
   );
   const total = subtotal + (subtotal > 10000 ? 0 : 500);
 
-   => {
-    const doc = new jsPDF();
-    doc.setFontSize(20);
-    doc.text("OptiStyle Invoice", 20, 20);
-    doc.setFontSize(12);
-    doc.text(`Invoice No: ${invNumber}`, 20, 35);
-    doc.text(`Customer: ${customerName}`, 20, 45);
-    doc.text(`Address: ${address}`, 20, 55);
-    doc.text(`Email: ${user.email}`, 20, 65);
 
-    let y = 85;
-    cart.forEach((item) => {
-      doc.text(
-        `${item.name} (${item.quantity} x ₹${item.price})`,
-        20,
-        y
-      );
-      y += 10;
-    });
+const generateAndDownloadLocalPDF = (
+  invNumber: string,
+  customerName: string,
+  address: string
+) => {
+  const doc = new jsPDF();
 
-    doc.text(`Total: ₹${total.toLocaleString()}`, 20, y + 10);
-    doc.save(`Invoice_${invNumber}.pdf`);
-  };
+  doc.setFontSize(20);
+  doc.text("OptiStyle Invoice", 20, 20);
+
+  doc.setFontSize(12);
+  doc.text(`Invoice No: ${invNumber}`, 20, 35);
+  doc.text(`Customer: ${customerName}`, 20, 45);
+  doc.text(`Address: ${address}`, 20, 55);
+
+  let y = 80;
+  cart.forEach((item) => {
+    doc.text(
+      `${item.name} (${item.quantity} × ₹${item.price})`,
+      20,
+      y
+    );
+    y += 10;
+  });
+
+  doc.text(`Total: ₹${total.toLocaleString()}`, 20, y + 10);
+
+  doc.save(`Invoice_${invNumber}.pdf`);
+};
+
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
