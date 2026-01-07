@@ -212,4 +212,10 @@ const App: React.FC = () => {
   );
 };
 
+
+<Route
+  path="/my-orders"
+  element={<MyOrders user={user} />}
+/>
+
 export default App;

@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL;
 
 import React from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
@@ -40,7 +41,8 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, user, logout }) => {
             <NavLink to="/products" className={({isActive}) => `transition-colors ${isActive ? (isAdm ? 'text-amber-400' : 'text-cyan-400') : 'text-slate-400 hover:text-white'}`}>Inventory</NavLink>
             <NavLink to="/eye-test" className={({isActive}) => `transition-colors ${isActive ? (isAdm ? 'text-amber-400' : 'text-cyan-400') : 'text-slate-400 hover:text-white'}`}>Analytics</NavLink>
             <NavLink to="/about" className={({isActive}) => `transition-colors ${isActive ? (isAdm ? 'text-amber-400' : 'text-cyan-400') : 'text-slate-400 hover:text-white'}`}>System</NavLink>
-            
+            <NavLink to="/my-orders" className={({isActive}) => `transition-colors ${isActive ? (isAdm ? 'text-amber-400' : 'text-cyan-400') : 'text-slate-400 hover:text-white'}`}>My Orders</NavLink>
+
             {isAdm && (
               <NavLink to="/admin" className="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded flex items-center gap-2 animate-pulse">
                 <HardDrive size={14} /> Command

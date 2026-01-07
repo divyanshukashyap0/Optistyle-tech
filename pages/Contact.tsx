@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, MessageSquare, Send, CheckCircle2, AlertTriangle, Terminal, Info } from 'lucide-react';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Contact: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
