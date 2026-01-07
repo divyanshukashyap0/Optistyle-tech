@@ -236,5 +236,6 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, clearCart, user }) => {
     </div>
   );
 };
+console.log("API URL =", import.meta.env.VITE_API_URL);
 
 export default Checkout;
